@@ -233,6 +233,18 @@
 (defn- add-default-constraints [query]
   (assoc-in query [:middleware :add-default-userland-constraints?] true))
 
+(defn- add-higher-constraints [query]
+  (assoc-in query [:middleware :add-higher-userland-constraints?] true))
+
+(s/defn process-query-and-save-with-higher-max-results-constraints!
+  "Same as `process-query-and-save-execution!` but will include the default max rows returned as a constraint. (This
+  function is ulitmately what powers most API endpoints that run queries, including `POST /api/dataset`.)"
+  ([query info]
+   (process-query-and-save-execution! (add-higher-constraints query) info))
+
+  ([query info context]
+   (process-query-and-save-execution! (add-higher-constraints query) info context)))
+
 (s/defn process-query-and-save-with-max-results-constraints!
   "Same as `process-query-and-save-execution!` but will include the default max rows returned as a constraint. (This
   function is ulitmately what powers most API endpoints that run queries, including `POST /api/dataset`.)"
